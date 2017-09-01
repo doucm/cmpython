@@ -10,6 +10,7 @@ from time import sleep
 from rest_framework.decorators import list_route
 import requests
 import random
+from account.models import Account, AccountTrigger
 
 class OrdersViewSet(viewsets.ModelViewSet):
     queryset = Orders.objects.all()
@@ -59,12 +60,34 @@ class OrdersViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except ValueError as e:
             return Response({'msg':e}, status=status.HTTP_400_BAD_REQUEST)
-        
+    
+    @list_route(methods=['POST'])   
+    def account(self, request, *args, **kwargs):
+        Account.objects.add(money=10)
+        return Response({},status=status.HTTP_200_OK)
+    
+    @list_route(methods=['POST'])   
+    def account_trigger(self, request, *args, **kwargs):
+        account = AccountTrigger(money=10)
+        account.save()
+#         accounts = AccountTrigger.objects.filter()
+#         print(accounts)
+        return Response({},status=status.HTTP_200_OK)
+    
     @list_route(methods=['GET'])
     def batch(self,request, *args, **kwargs):
+        type = request.query_params.get('type')
         order_no = random.randint(1000,2000)
         data = {'order_no':order_no,'order_price':4.5,'goods_id':1,'goods_num':1}
-        url = "http://127.0.0.1:8888/orders/add_order/"
+        #url = "http://127.0.0.1:8888/orders/add_order/"
+        #url = "http://127.0.0.1:8888/orders/account/"
+        if type=='trigger':
+            url = "http://127.0.0.1:8888/orders/account_trigger/"
+        if type=='order':
+            url = "http://127.0.0.1:8888/orders/add_order/"
+        if type=='account':
+            url = "http://127.0.0.1:8888/orders/account/"
+        
         re = requests.post(url=url,data=data)
         return Response({re.status_code}, status=status.HTTP_200_OK)
  
