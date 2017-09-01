@@ -19,7 +19,6 @@ class OrdersViewSet(viewsets.ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -38,7 +37,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
             goods = Goods.objects.get(pk=goods_id)
             if goods.goods_num < goods_num:
                 return Response({'msg':'库存不足'}, status=status.HTTP_400_BAD_REQUEST)
-            sleep(3)
+            #sleep(3)
             row = Goods.objects.filter(pk=goods_id,goods_num__gt=0).update(goods_num=F('goods_num')-goods_num)
             if row==0:
                 return Response({'msg':'库存不足'}, status=status.HTTP_400_BAD_REQUEST)
@@ -65,7 +64,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
     def batch(self,request, *args, **kwargs):
         order_no = random.randint(1000,2000)
         data = {'order_no':order_no,'order_price':4.5,'goods_id':1,'goods_num':1}
-        url = "http://127.0.0.1:8888/orders/"
+        url = "http://127.0.0.1:8888/orders/add_order/"
         re = requests.post(url=url,data=data)
         return Response({re.status_code}, status=status.HTTP_200_OK)
  
