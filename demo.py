@@ -18,24 +18,5 @@ headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, l
       'Accept-Charset':'GBK,utf-8;q=0.7,*;q=0.3',
       'Cache-Control':'max-age=0'
       }
-
-p = int(sys.argv[1])
-p = 4354+p
-url = "http://www.shixiu.net/nanshi/zhuzuo/jgjssm/%s.html" %p #4355-4391
-
-rs = requests.get(url,headers=headers)
-rs.encoding='gbk'
-soup = BeautifulSoup(rs.text,"lxml")
-content = soup.findAll("p")
-for c in content:
-    str = c.string
-    if str:
-        str_size = len(str)
-        i = 0
-        while i < str_size:
-            i = i+1
-            if i % 50 == 0 :
-                str = str[:i]+'\n'+str[i:]
-        
-        print(str)
+ 
         
